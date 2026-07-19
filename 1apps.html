@@ -1,0 +1,2536 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>X-GODO DIGITAL V3</title>
+    <style>
+        /* ===== RESET & ROOT ===== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg: #0a0a0f;
+            --surface: #13131a;
+            --surface2: #1a1a24;
+            --border: #252535;
+            --text: #e0e0e0;
+            --text2: #a0a0b0;
+            --accent: #7c5cfc;
+            --accent2: #5b3de8;
+            --accent-glow: rgba(124, 92, 252, 0.3);
+            --red: #e74c3c;
+            --green: #2ecc71;
+            --gold: #f0a500;
+            --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --navbar-height: 68px;
+            --header-height: 56px;
+        }
+        .theme-blue {
+            --accent: #4d8af0;
+            --accent2: #3570d8;
+            --accent-glow: rgba(77, 138, 240, 0.3);
+        }
+        .theme-green {
+            --accent: #2ecc71;
+            --accent2: #25a35a;
+            --accent-glow: rgba(46, 204, 113, 0.3);
+        }
+        .theme-orange {
+            --accent: #f39c12;
+            --accent2: #d68910;
+            --accent-glow: rgba(243, 156, 18, 0.3);
+        }
+        .theme-red {
+            --accent: #e74c3c;
+            --accent2: #c0392b;
+            --accent-glow: rgba(231, 76, 60, 0.3);
+        }
+        .theme-pink {
+            --accent: #e91e90;
+            --accent2: #c0156f;
+            --accent-glow: rgba(233, 30, 144, 0.3);
+        }
+        .theme-cyan {
+            --accent: #00bcd4;
+            --accent2: #0097a7;
+            --accent-glow: rgba(0, 188, 212, 0.3);
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: calc(var(--navbar-height) + 20px);
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow-x: hidden;
+            transition: background var(--transition), color var(--transition);
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: -200px;
+            left: -200px;
+            width: 600px;
+            height: 600px;
+            background: var(--accent-glow);
+            border-radius: 50%;
+            filter: blur(180px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.4;
+            transition: background var(--transition);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 10, 15, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: var(--header-height);
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px var(--accent-glow);
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 14px;
+            color: #fff;
+            letter-spacing: -1px;
+            flex-shrink: 0;
+        }
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .store-name {
+            font-weight: 700;
+            font-size: 15px;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px;
+        }
+        .btn-settings {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: border var(--transition), background var(--transition);
+        }
+        .btn-settings:hover {
+            border-color: var(--accent);
+            background: var(--surface);
+        }
+        .dot-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 5px);
+            grid-template-rows: repeat(3, 5px);
+            gap: 3px;
+        }
+        .dot-grid span {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--text2);
+        }
+
+        /* ===== SECTIONS ===== */
+        .section {
+            display: none;
+            padding: 16px;
+            position: relative;
+            z-index: 1;
+            animation: fadeSlideIn 0.35s ease;
+        }
+        .section.active {
+            display: block;
+        }
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+            display: inline-block;
+            position: relative;
+        }
+        .title::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px;
+            margin-bottom: 12px;
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 6px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--accent-glow);
+        }
+        .card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        .card p,
+        .card .text-muted {
+            color: var(--text2);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 12px 0;
+        }
+        .features li {
+            font-size: 13px;
+            color: var(--text2);
+            padding: 3px 0 3px 16px;
+            position: relative;
+        }
+        .features li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent);
+            opacity: 0.7;
+        }
+        .price-tag {
+            display: inline-block;
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--gold);
+            background: rgba(240, 165, 0, 0.1);
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+        .discount-badge {
+            display: inline-block;
+            background: var(--green);
+            color: #000;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-left: 6px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-block;
+            padding: 11px 22px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 13px;
+            letter-spacing: 0.3px;
+            text-decoration: none;
+            text-align: center;
+            color: #fff;
+            background: var(--accent);
+            box-shadow: 0 4px 16px var(--accent-glow);
+            transition: all var(--transition);
+        }
+        .btn:hover {
+            background: var(--accent2);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 24px var(--accent-glow);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            box-shadow: none;
+            color: var(--accent);
+        }
+        .btn-outline:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-sm {
+            padding: 7px 14px;
+            font-size: 11px;
+            border-radius: 18px;
+        }
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        .btn-danger {
+            background: var(--red);
+            box-shadow: 0 4px 16px rgba(231, 76, 60, 0.3);
+        }
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        .btn-secondary {
+            background: var(--surface2);
+            box-shadow: none;
+        }
+        .btn-secondary:hover {
+            background: var(--border);
+        }
+        .mt-2 {
+            margin-top: 8px;
+        }
+        .gap-2 {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 200;
+            display: flex;
+            gap: 6px;
+            background: rgba(20, 20, 30, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 6px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            width: auto;
+            max-width: 92%;
+            overflow-x: auto;
+        }
+        .navbar button {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.55);
+            cursor: pointer;
+            padding: 10px 16px;
+            border-radius: 24px;
+            font-weight: 600;
+            font-size: 12px;
+            white-space: nowrap;
+            transition: all var(--transition);
+        }
+        .navbar button.active {
+            color: #fff;
+            background: var(--accent);
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+        .navbar.member-nav {
+            width: 90%;
+            max-width: 420px;
+            justify-content: center;
+            gap: 4px;
+        }
+        .navbar.member-nav button {
+            flex: 1;
+            padding: 12px 8px;
+            font-size: 13px;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s;
+            padding: 16px;
+        }
+        .modal-overlay.hidden {
+            display: none;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .modal-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            position: relative;
+            animation: modalSlide 0.3s;
+        }
+        @keyframes modalSlide {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .modal-panel h2 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+        .modal-panel p {
+            color: var(--text2);
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .modal-panel .btn-group {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+        .modal-panel .btn-group .btn {
+            min-width: 100px;
+        }
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 14px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: #fff;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: border var(--transition);
+        }
+        .close-btn:hover {
+            border-color: var(--accent);
+        }
+
+        /* ===== PAYMENT MODAL ===== */
+        .payment-methods {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+        .payment-col {
+            flex: 1 1 200px;
+            min-width: 160px;
+            background: var(--surface2);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+        .payment-col p {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+        .qris-img-wrap {
+            cursor: pointer;
+            display: inline-block;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            transition: border var(--transition), transform 0.3s;
+        }
+        .qris-img-wrap img {
+            width: 140px;
+            display: block;
+        }
+        .qris-img-wrap.zoomed {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.9);
+            z-index: 600;
+            border-color: var(--accent);
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.9);
+            border-radius: 16px;
+        }
+        .qris-img-wrap.zoomed img {
+            width: 240px;
+        }
+        .qris-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 599;
+            cursor: pointer;
+        }
+        .qris-backdrop.hidden {
+            display: none;
+        }
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: var(--radius);
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            background: var(--surface2);
+            margin: 12px 0;
+            transition: border var(--transition), background var(--transition);
+        }
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: rgba(124, 92, 252, 0.05);
+        }
+        .upload-area input {
+            display: none;
+        }
+        .upload-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            margin-top: 8px;
+            display: none;
+            border: 1px solid var(--border);
+        }
+        .scan-result {
+            background: var(--surface2);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-top: 10px;
+            text-align: center;
+            border: 1px solid var(--border);
+            display: none;
+        }
+        .scan-result.success {
+            border-color: var(--green);
+            display: block;
+        }
+        .scan-result.fail {
+            border-color: var(--red);
+            display: block;
+        }
+        .detected-nominal {
+            font-size: 22px;
+            font-weight: 700;
+        }
+        .scan-result.success .detected-nominal {
+            color: var(--green);
+        }
+        .scan-result.fail .detected-nominal {
+            color: var(--red);
+        }
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 14px 0;
+        }
+
+        /* ===== LOGIN ===== */
+        .login-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .login-container.hidden {
+            display: none;
+        }
+        .login-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+        }
+        .logo-big {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+            font-weight: 800;
+            font-size: 28px;
+            color: #fff;
+            letter-spacing: -1px;
+        }
+        .login-card h2 {
+            color: #fff;
+            margin-bottom: 4px;
+            font-size: 20px;
+        }
+        .login-card .text-muted {
+            color: var(--text2);
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .login-card input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 25px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 10px;
+            outline: none;
+            transition: border var(--transition), box-shadow var(--transition);
+        }
+        .login-card input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .create-link {
+            margin-top: 14px;
+            font-size: 12px;
+            color: var(--text2);
+        }
+        .create-link a {
+            color: var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .error-msg {
+            color: var(--red);
+            font-size: 12px;
+            margin-bottom: 6px;
+            display: none;
+        }
+        .error-msg.show {
+            display: block;
+        }
+
+        /* ===== LOADING OVERLAY (TikTok Embed + Blur) ===== */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.85);
+            animation: fadeIn 0.4s ease;
+            overflow: hidden;
+        }
+        .loading-overlay.hidden {
+            display: none;
+        }
+
+        /* === Background Blur Video === */
+        .loading-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .loading-bg iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 120%;
+            height: 120%;
+            transform: translate(-50%, -50%) scale(1.2);
+            filter: blur(30px) brightness(0.6);
+            pointer-events: none;
+            border: none;
+            opacity: 0.9;
+        }
+
+        /* === Foreground Clean Video === */
+        .loading-foreground {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 90%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .loading-foreground .video-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            aspect-ratio: 9 / 16;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(124, 92, 252, 0.5), 0 0 120px rgba(124, 92, 252, 0.15);
+            border: 3px solid var(--accent);
+            background: #000;
+        }
+        .loading-foreground .video-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        .loading-text {
+            margin-top: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 30px var(--accent-glow), 0 0 60px var(--accent-glow);
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, var(--accent), #fff, var(--accent));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmerText 2.5s linear infinite;
+        }
+        @keyframes shimmerText {
+            0% {
+                background-position: -200% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+        .loading-sub {
+            margin-top: 6px;
+            font-size: 13px;
+            color: var(--text2);
+            letter-spacing: 3px;
+            opacity: 0.8;
+        }
+        .loading-sub::after {
+            content: '';
+            animation: dots 1.5s steps(1) infinite;
+        }
+        @keyframes dots {
+            0% {
+                content: '';
+            }
+            33% {
+                content: ' .';
+            }
+            66% {
+                content: ' ..';
+            }
+            100% {
+                content: ' ...';
+            }
+        }
+
+        /* ===== SETTINGS FULLSCREEN ===== */
+        .settings-fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 400;
+            background: var(--bg);
+            overflow-y: auto;
+            padding: 20px;
+            animation: fadeSlideIn 0.3s;
+        }
+        .settings-fullscreen.hidden {
+            display: none;
+        }
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+        .settings-header h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .back-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: border var(--transition);
+        }
+        .back-btn:hover {
+            border-color: var(--accent);
+        }
+        .settings-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .settings-section label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text2);
+            margin-bottom: 6px;
+        }
+        .settings-section input,
+        .settings-section select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            margin-bottom: 6px;
+            transition: border var(--transition), box-shadow var(--transition);
+        }
+        .settings-section input:focus,
+        .settings-section select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .theme-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .theme-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            transition: border var(--transition), transform var(--transition);
+        }
+        .theme-dot:hover {
+            transform: scale(1.1);
+        }
+        .theme-dot.selected {
+            border-color: #fff;
+            box-shadow: 0 0 20px currentColor, 0 0 40px var(--accent-glow);
+        }
+        .profile-pic-wrap {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: var(--surface2);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px auto;
+            position: relative;
+            transition: border var(--transition);
+        }
+        .profile-pic-wrap:hover {
+            border-color: var(--accent);
+        }
+        .profile-pic-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .overlay-text {
+            position: absolute;
+            font-size: 13px;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 4px 8px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+
+        /* ===== ROLE BADGE ===== */
+        .role-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            background: var(--accent);
+            color: #fff;
+        }
+        .role-badge.pemilik {
+            background: #e74c3c;
+            box-shadow: 0 0 16px rgba(231, 76, 60, 0.4);
+        }
+        .role-badge.developer {
+            background: #f1c40f;
+            color: #000;
+            box-shadow: 0 0 12px rgba(241, 196, 15, 0.4);
+        }
+        .role-badge.owner {
+            background: #e91e90;
+            color: #fff;
+            box-shadow: 0 0 16px rgba(233, 30, 144, 0.4);
+        }
+        .role-badge.admin {
+            background: #4d8af0;
+            box-shadow: 0 0 12px rgba(77, 138, 240, 0.4);
+        }
+        .role-badge.member {
+            background: #888;
+            color: #fff;
+        }
+
+        .account-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .account-list-item:last-child {
+            border-bottom: none;
+        }
+        .username {
+            font-weight: 600;
+            color: #fff;
+            font-size: 13px;
+        }
+        .btn-delete {
+            background: var(--red);
+            color: #fff;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: opacity var(--transition);
+        }
+        .btn-delete:hover {
+            opacity: 0.8;
+        }
+
+        /* ===== TOOLS GRID ===== */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .tools-grid .card {
+            background: linear-gradient(145deg, rgba(124, 92, 252, 0.08) 0%, rgba(19, 19, 26, 0.9) 100%);
+            border: 1px solid rgba(124, 92, 252, 0.15);
+            border-radius: var(--radius);
+            padding: 20px 14px;
+            text-align: center;
+            backdrop-filter: blur(8px);
+            transition: 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .tools-grid .card::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            left: -20%;
+            width: 140%;
+            height: 140%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.04), transparent 70%);
+            pointer-events: none;
+        }
+        .tools-grid .card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 25px var(--accent-glow), 0 8px 30px rgba(0, 0, 0, 0.6);
+            transform: translateY(-3px);
+        }
+        .tools-grid .card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            margin-bottom: 10px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .tools-grid .card h3::before {
+            content: '📦';
+            font-size: 18px;
+        }
+        .tools-grid .btn {
+            margin-top: 6px;
+            background: rgba(124, 92, 252, 0.15);
+            border: 1px solid var(--accent);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: 0.25s;
+            backdrop-filter: blur(4px);
+        }
+        .tools-grid .btn:hover {
+            background: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .text-center {
+            text-align: center;
+        }
+
+        /* ===== CHAT ===== */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: calc(80vh - 100px);
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            background: var(--surface2);
+            border-radius: var(--radius);
+            padding: 12px;
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .chat-message {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            animation: fadeSlideIn 0.2s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        .chat-message.own {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+        .chat-message .msg-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 12px;
+            color: #fff;
+            background: var(--accent);
+        }
+        .chat-message .msg-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .chat-message .msg-body {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 8px 12px;
+            max-width: 75%;
+            transition: border var(--transition);
+        }
+        .chat-message.own .msg-body {
+            border-color: var(--accent);
+        }
+        .chat-message .msg-header {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+        .chat-message .msg-name {
+            font-weight: 700;
+            font-size: 12px;
+            color: #fff;
+        }
+        .chat-message .msg-role {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 8px;
+        }
+        .chat-message .msg-text {
+            font-size: 13px;
+            color: var(--text);
+            word-break: break-word;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: border var(--transition), box-shadow var(--transition);
+        }
+        .chat-input-area input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .delete-msg-btn {
+            background: var(--red);
+            border: none;
+            color: #fff;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 11px;
+            line-height: 1;
+            margin-left: auto;
+            flex-shrink: 0;
+            transition: opacity var(--transition);
+        }
+        .delete-msg-btn.show {
+            display: inline-flex;
+        }
+        .delete-msg-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* ===== TOAST ===== */
+        #toastContainer {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+            width: 90%;
+            max-width: 400px;
+        }
+        .toast {
+            background: var(--surface);
+            border: 1px solid var(--accent);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 25px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 20px var(--accent-glow);
+            font-weight: 600;
+            font-size: 13px;
+            position: relative;
+            overflow: hidden;
+            pointer-events: auto;
+            animation: toastSlideIn 0.4s ease;
+            text-align: center;
+        }
+        .toast.error {
+            border-color: var(--red);
+            box-shadow: 0 0 20px rgba(231, 76, 60, 0.4);
+        }
+        .toast.warning {
+            border-color: var(--gold);
+            box-shadow: 0 0 20px rgba(240, 165, 0, 0.4);
+        }
+        .toast.success {
+            border-color: var(--green);
+            box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
+        }
+        .toast::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            animation: shimmerMove 1.5s infinite;
+        }
+        @keyframes toastSlideIn {
+            from {
+                transform: translateY(-40px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        @keyframes toastFadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+        @keyframes shimmerMove {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 400px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            .navbar button {
+                padding: 8px 10px;
+                font-size: 10px;
+            }
+            .profile-pic-wrap {
+                width: 130px;
+                height: 130px;
+            }
+            .modal-panel {
+                padding: 16px;
+            }
+            .qris-img-wrap img {
+                width: 100px;
+            }
+            .qris-img-wrap.zoomed img {
+                width: 180px;
+            }
+            .qris-img-wrap.zoomed {
+                transform: translate(-50%, -50%) scale(1.5);
+            }
+            .loading-foreground .video-wrapper {
+                max-width: 280px;
+            }
+            .loading-text {
+                font-size: 15px;
+            }
+        }
+        @media (max-width: 500px) {
+            .store-name {
+                max-width: 100px;
+                font-size: 13px;
+            }
+            .header {
+                padding: 8px 12px;
+            }
+            .section {
+                padding: 12px;
+            }
+            .navbar button {
+                padding: 8px 12px;
+                font-size: 11px;
+            }
+        }
+        @media (min-width: 768px) {
+            .tools-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== LOGIN ===== -->
+    <div class="login-container" id="loginPage">
+        <div class="login-card">
+            <div class="logo-big">XG</div>
+            <h2>X-GODO DIGITAL V3</h2>
+            <p class="text-muted">Masuk ke akun Anda</p>
+            <input type="text" id="loginUsername" placeholder="Username" autocomplete="off" />
+            <input type="password" id="loginPassword" placeholder="Password" />
+            <div class="error-msg" id="loginError">Username atau password salah</div>
+            <button class="btn" onclick="doLogin()">Masuk</button>
+            <div class="create-link">Belum punya akun? <a onclick="goToCreateAccount()">Buat akun</a></div>
+        </div>
+    </div>
+
+    <!-- ===== LOADING OVERLAY (TikTok Embed + Blur) ===== -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <!-- Background Blur Video -->
+        <div class="loading-bg">
+            <iframe
+                src="https://www.tiktok.com/embed/v2/7509618039950494994"
+                frameborder="0"
+                allow="autoplay; encrypted-media"
+                allowfullscreen
+                loading="lazy">
+            </iframe>
+        </div>
+
+        <!-- Foreground Clean Video -->
+        <div class="loading-foreground">
+            <div class="video-wrapper">
+                <iframe
+                    src="https://www.tiktok.com/embed/v2/7509618039950494994"
+                    frameborder="0"
+                    allow="autoplay; encrypted-media"
+                    allowfullscreen
+                    loading="lazy">
+                </iframe>
+            </div>
+            <p class="loading-text">✦ X-GODO DIGITAL ✦</p>
+            <p class="loading-sub">Menghubungkan ke dashboard</p>
+        </div>
+    </div>
+
+    <!-- ===== MAIN APP ===== -->
+    <div id="mainApp" style="display:none;">
+
+        <!-- HEADER -->
+        <div class="header">
+            <div class="logo-area" onclick="switchSection('home')">
+                <div class="logo-icon" id="headerLogoContainer">XG</div>
+                <span class="store-name" id="headerDisplayName">User</span>
+            </div>
+            <button class="btn-settings" onclick="openSettings()" aria-label="Pengaturan">
+                <div class="dot-grid"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            </button>
+        </div>
+
+        <!-- HOME -->
+        <section id="home" class="section active">
+            <div class="title">Selamat Datang</div>
+            <div class="card">
+                <h3>Halo, <span id="displayName">User</span></h3>
+                <p class="text-muted">Selamat datang di X-GODO DIGITAL V3.</p>
+            </div>
+            <div class="card">
+                <h3>Info Penting</h3>
+                <p class="text-muted">Pastikan membaca cara order sebelum membeli. dan wajib baca tentang aplikasi X-GODO di bagian pengaturan titik 6 klik dan scrol untuk membaca.</p>
+            </div>
+        </section>
+
+        <!-- PRODUK -->
+        <section id="produk" class="section">
+            <div class="title">Produk Kami</div>
+            <div id="productList"></div>
+            <div class="card">
+                <h3>Cara Order</h3>
+                <ol style="color:var(--text2);font-size:13px;padding-left:18px;">
+                    <li>Pilih produk</li>
+                    <li>Klik beli &amp; bayar</li>
+                    <li>Upload bukti transfer</li>
+                    <li>Chat admin</li>
+                    <li>Tunggu proses</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- TOOLS (APPS) -->
+        <section id="tools" class="section">
+            <div class="title">Aplikasi Gratis</div>
+            <div id="toolsList" class="tools-grid"></div>
+            <p class="text-muted text-center mt-2">Klik download untuk mengunduh aplikasi.</p>
+        </section>
+
+        <!-- CHAT -->
+        <section id="chat" class="section">
+            <div class="title">Chat Global</div>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInput" placeholder="Ketik pesan..." />
+                    <button class="btn btn-sm" onclick="sendChatMessage()">Kirim</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUPORT -->
+        <section id="suport" class="section">
+            <div class="title">SUPORT</div>
+            <div class="card">
+                <h3>Dukung Kami</h3>
+                <a href="https://sociabuzz.com/soaciabuzzallbotzz/tribe" target="_blank" class="btn btn-sm">Kunjungi Sociabuzz</a>
+            </div>
+        </section>
+
+        <!-- NAVBAR -->
+        <div class="navbar" id="navbar">
+            <button class="active" data-section="home">Home</button>
+            <button data-section="produk">Produk</button>
+            <button data-section="tools">Apps</button>
+            <button data-section="chat">Chat</button>
+            <button data-section="suport">SUPORT</button>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toastContainer"></div>
+
+    <!-- ===== QRIS BACKDROP ===== -->
+    <div class="qris-backdrop hidden" id="qrisBackdrop" onclick="closeQrisZoom()"></div>
+
+    <!-- ===== PAYMENT MODAL ===== -->
+    <div class="modal-overlay hidden" id="paymentModal">
+        <div class="modal-panel">
+            <button class="close-btn" onclick="closePayment()">&times;</button>
+            <h2>Pembayaran</h2>
+            <p id="paymentProductName" style="font-weight:700;color:#fff;"></p>
+            <p id="paymentPrice" style="color:var(--gold);font-weight:700;"></p>
+            <div class="payment-methods">
+                <div class="payment-col">
+                    <p>QRIS <span style="font-size:11px;color:var(--text2);">(klik gambar)</span></p>
+                    <div class="qris-img-wrap" id="qrisImgWrap" onclick="toggleQrisZoom(event)">
+                        <img src="https://files.catbox.moe/2ijius.jpeg" alt="QRIS" loading="lazy" />
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <p style="font-weight:600;color:#fff;">Upload Bukti Transfer</p>
+            <div class="upload-area" onclick="document.getElementById('buktiUpload').click()">
+                <div style="font-size:40px;line-height:1;">&#65291;</div>
+                <input type="file" id="buktiUpload" accept="image/*" onchange="handleBuktiUpload(event)" />
+            </div>
+            <img class="upload-preview" id="uploadPreview" alt="Preview bukti" />
+            <div class="scan-result" id="scanResult">
+                <p class="text-muted">Hasil Deteksi Nominal:</p>
+                <p class="detected-nominal" id="detectedNominal">-</p>
+                <p id="scanMsg"></p>
+            </div>
+            <button class="btn btn-block mt-2" id="btnChatAdmin" style="display:none;" onclick="chatAdmin()">Chat Admin Sekarang</button>
+            <button class="btn btn-block btn-outline mt-2" id="btnRescan" style="display:none;" onclick="rescanBukti()">Upload Ulang</button>
+        </div>
+    </div>
+
+    <!-- ===== CONFIRM DIALOG MODAL ===== -->
+    <div class="modal-overlay hidden" id="confirmModal">
+        <div class="modal-panel">
+            <button class="close-btn" onclick="closeConfirmDialog()">&times;</button>
+            <h2 id="confirmTitle">Konfirmasi</h2>
+            <p id="confirmMessage">Apakah Anda yakin?</p>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="closeConfirmDialog()">Batal</button>
+                <button class="btn btn-danger" id="confirmYesBtn">Ya, lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SETTINGS FULLSCREEN ===== -->
+    <div class="settings-fullscreen hidden" id="settingsFullscreen">
+        <div class="settings-header">
+            <h2>Pengaturan</h2>
+            <button class="back-btn" onclick="closeSettings()">Selesai</button>
+        </div>
+
+        <div class="settings-section">
+            <label>Foto Profil</label>
+            <div class="profile-pic-wrap" onclick="document.getElementById('profilePicInput').click()">
+                <img id="settingsProfilePic" style="display:none;" alt="Foto profil" />
+                <span class="overlay-text" id="profilePicPlaceholder">Klik ubah</span>
+            </div>
+            <input type="file" id="profilePicInput" accept="image/*" style="display:none;" onchange="changeProfilePic(event)" />
+        </div>
+
+        <div class="settings-section">
+            <label>Nama Pengguna</label>
+            <input type="text" id="settingsDisplayName" />
+            <button class="btn btn-sm mt-2" onclick="saveDisplayName()">Simpan Nama</button>
+        </div>
+
+        <div class="settings-section">
+            <label>Ubah Sandi</label>
+            <input type="password" id="settingsNewPass" placeholder="Sandi baru" />
+            <button class="btn btn-sm mt-2" onclick="changePassword()">Simpan Sandi</button>
+        </div>
+
+        <div class="settings-section">
+            <label>Role Saya</label>
+            <span class="role-badge" id="settingsRoleBadge">Member</span>
+        </div>
+
+        <div class="settings-section">
+            <label>Ubah Tema</label>
+            <div class="theme-options" id="themeOptions">
+                <div class="theme-dot" style="background:#7c5cfc;" data-theme="default" title="Default"></div>
+                <div class="theme-dot" style="background:#4d8af0;" data-theme="theme-blue" title="Biru"></div>
+                <div class="theme-dot" style="background:#2ecc71;" data-theme="theme-green" title="Hijau"></div>
+                <div class="theme-dot" style="background:#f39c12;" data-theme="theme-orange" title="Oranye"></div>
+                <div class="theme-dot" style="background:#e74c3c;" data-theme="theme-red" title="Merah"></div>
+                <div class="theme-dot" style="background:#e91e90;" data-theme="theme-pink" title="Pink"></div>
+                <div class="theme-dot" style="background:#00bcd4;" data-theme="theme-cyan" title="Cyan"></div>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <label>Code Voucher</label>
+            <input type="text" id="voucherInput" placeholder="Masukkan kode voucher" />
+            <button class="btn btn-sm mt-2" onclick="applyVoucher()">Gunakan Voucher</button>
+            <p id="voucherStatus" class="text-muted" style="margin-top:6px;"></p>
+        </div>
+
+        <div class="settings-section" id="createAccountSection" style="display:none;">
+            <label>Buat Akun Baru</label>
+            <input type="text" id="newAccUsername" placeholder="Username" />
+            <input type="password" id="newAccPassword" placeholder="Password" />
+            <select id="newAccRole">
+                <option value="member">Member</option>
+                <option value="admin">Admin</option>
+                <option value="owner">Owner</option>
+                <option value="developer">Developer</option>
+            </select>
+            <select id="newAccDuration">
+                <option value="0">Permanen</option>
+                <option value="1">1 Hari</option>
+                <option value="7">7 Hari</option>
+                <option value="30">30 Hari</option>
+            </select>
+            <button class="btn btn-sm mt-2" onclick="createAccountByRole()">Buat Akun</button>
+            <p id="createAccMsg" class="text-muted" style="margin-top:6px;"></p>
+        </div>
+
+        <div class="settings-section">
+            <label>Akun Terdaftar</label>
+            <div id="accountListContainer"></div>
+        </div>
+
+        <div class="settings-section">
+            <label>Ketentuan Aplikasi</label>
+            <div style="color:var(--text2);font-size:13px;line-height:1.7;max-height:200px;overflow-y:auto;">
+                <p><strong>1. Penggunaan yang Dilarang</strong><br />Aplikasi ini tidak boleh digunakan untuk aktivitas ilegal, penipuan, spam, peretasan, atau melanggar hukum yang berlaku.</p>
+                <p><strong>2. Akun &amp; Keamanan</strong><br />Jaga kerahasiaan username dan password Anda. Pemilik tidak bertanggung jawab atas penyalahgunaan akun.</p>
+                <p><strong>3. Transaksi &amp; Pembayaran</strong><br />Semua pembelian produk bersifat final. Pastikan nominal transfer sesuai sebelum konfirmasi.</p>
+                <p><strong>4. Konten &amp; Perilaku Chat</strong><br />Dilarang mengirim konten SARA, pornografi, atau mengganggu pengguna lain. Pelanggaran dapat mengakibatkan pemblokiran akun.</p>
+                <p><strong>5. Perubahan Ketentuan</strong><br />Ketentuan dapat berubah sewaktu-waktu tanpa pemberitahuan terlebih dahulu.</p>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <button class="btn btn-block btn-danger" onclick="confirmLogout()">Keluar</button>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== JAVASCRIPT ===== -->
+    <!-- ============================================================ -->
+    <script>
+        // ===================== CONSTANTS =====================
+        const STORAGE_KEY = 'xgodo_v3';
+        const CHAT_STORAGE = 'xgodo_chat_messages';
+        const DEFAULT_AVATAR = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Crect width="100" height="100" fill="%237c5cfc"/%3E%3Ctext x="50" y="60" font-size="40" fill="white" text-anchor="middle" font-weight="bold"%3EXG%3C/text%3E%3C/svg%3E';
+        const LOADING_DELAY = 5000; // 5 detik
+
+        // ===================== DATA =====================
+        let appData = {
+            accounts: {
+                'allsans': { password: '1234', role: 'pemilik', displayName: 'All Sans', profilePic: '', expiry: null }
+            },
+            currentUser: null,
+            vouchersUsed: [],
+            hasEverPurchased: false,
+            activeVoucher: null,
+            displayName: '',
+            profilePic: '',
+            theme: 'default',
+            voucherCounter: 0,
+            generatedVouchers: []
+        };
+
+        let currentPaymentProduct = null;
+        let currentPaymentPrice = null;
+        let scanAttempts = 0;
+        let _lastGeneratedVoucher = null;
+
+        // ===================== CONFIRM DIALOG =====================
+        let confirmResolve = null;
+
+        function showConfirmDialog(title, message, dangerLabel) {
+            return new Promise(function(resolve) {
+                confirmResolve = resolve;
+                document.getElementById('confirmTitle').textContent = title || 'Konfirmasi';
+                document.getElementById('confirmMessage').textContent = message || 'Apakah Anda yakin?';
+                var yesBtn = document.getElementById('confirmYesBtn');
+                yesBtn.textContent = dangerLabel || 'Ya, lanjutkan';
+                document.getElementById('confirmModal').classList.remove('hidden');
+            });
+        }
+
+        function closeConfirmDialog() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            if (confirmResolve) {
+                confirmResolve(false);
+                confirmResolve = null;
+            }
+        }
+
+        document.getElementById('confirmYesBtn').addEventListener('click', function() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            if (confirmResolve) {
+                confirmResolve(true);
+                confirmResolve = null;
+            }
+        });
+
+        // ===================== LOADING OVERLAY =====================
+        function showLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.remove('hidden');
+            const iframes = overlay.querySelectorAll('iframe');
+            iframes.forEach(function(iframe) {
+                const src = iframe.src;
+                iframe.src = '';
+                setTimeout(function() {
+                    iframe.src = src;
+                }, 100);
+            });
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.add('hidden');
+        }
+
+        // ===================== TOAST =====================
+        function showToast(message, type) {
+            type = type || 'info';
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(function() {
+                toast.style.animation = 'toastFadeOut 0.3s ease forwards';
+                setTimeout(function() { toast.remove(); }, 300);
+            }, 3000);
+        }
+
+        // ===================== STORAGE HELPERS =====================
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+        }
+
+        function loadData() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) {
+                try {
+                    appData = JSON.parse(raw);
+                    if (!appData.accounts['allsans']) {
+                        appData.accounts['allsans'] = { password: '1234', role: 'pemilik', displayName: 'All Sans',
+                            profilePic: '', expiry: null };
+                    } else if (appData.accounts['allsans'].password === '1234') {
+                        appData.accounts['allsans'].role = 'pemilik';
+                    }
+                    if (!appData.voucherCounter) appData.voucherCounter = 0;
+                    if (!appData.generatedVouchers) appData.generatedVouchers = [];
+                } catch (e) {
+                    resetData();
+                }
+            } else {
+                resetData();
+            }
+            saveData();
+        }
+
+        function resetData() {
+            appData = {
+                accounts: { 'allsans': { password: '1234', role: 'pemilik', displayName: 'All Sans', profilePic: '',
+                        expiry: null } },
+                currentUser: null,
+                vouchersUsed: [],
+                hasEverPurchased: false,
+                activeVoucher: null,
+                displayName: '',
+                profilePic: '',
+                theme: 'default',
+                voucherCounter: 0,
+                generatedVouchers: []
+            };
+        }
+
+        function getCurrentAccount() {
+            return appData.currentUser ? appData.accounts[appData.currentUser] || null : null;
+        }
+
+        function saveChatMessages() {
+            localStorage.setItem(CHAT_STORAGE, JSON.stringify(chatMessages));
+        }
+
+        function getAvatarForUser(username) {
+            const acc = appData.accounts[username];
+            if (acc && acc.profilePic) return acc.profilePic;
+            return DEFAULT_AVATAR;
+        }
+
+        // ===================== VOUCHER GENERATOR =====================
+        function generateVoucher() {
+            appData.voucherCounter = (appData.voucherCounter || 0) + 1;
+            const code = 'X-GODO-GOGO-' + String(appData.voucherCounter).padStart(3, '0');
+            appData.generatedVouchers.push(code);
+            saveData();
+            return code;
+        }
+
+        function isValidVoucher(code) {
+            const hardcoded = ['X-GODO-GOGO'];
+            return hardcoded.includes(code) || appData.generatedVouchers.includes(code);
+        }
+
+        // ===================== LOGIN / LOGOUT =====================
+        function showLoginPage() {
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('mainApp').style.display = 'none';
+        }
+
+        function showMainApp() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainApp').style.display = 'block';
+            updateDisplayName();
+            updateSettingsProfilePic();
+            updateRoleBadge();
+            updateCreateAccountVisibility();
+            updateNavbarVisibility();
+            switchSection('home');
+            highlightSelectedTheme();
+            requestNotificationPermission();
+        }
+
+        function doLogin() {
+            const u = document.getElementById('loginUsername').value.trim();
+            const p = document.getElementById('loginPassword').value;
+            const err = document.getElementById('loginError');
+            if (!u || !p) {
+                err.textContent = 'Isi username & password';
+                err.classList.add('show');
+                return;
+            }
+            const acc = appData.accounts[u];
+            if (acc && acc.password === p) {
+                if (acc.expiry && Date.now() > acc.expiry) {
+                    showToast('Akun kedaluwarsa.', 'error');
+                    err.textContent = '';
+                    err.classList.remove('show');
+                    return;
+                }
+                err.classList.remove('show');
+                showLoading();
+
+                setTimeout(function() {
+                    appData.currentUser = u;
+                    if (!acc.displayName) acc.displayName = u;
+                    appData.displayName = acc.displayName || u;
+                    saveData();
+                    hideLoading();
+                    showMainApp();
+                    showToast('Selamat datang, ' + appData.displayName + '!', 'success');
+                }, LOADING_DELAY);
+
+            } else {
+                err.textContent = 'Username atau password salah';
+                err.classList.add('show');
+            }
+        }
+
+        async function confirmLogout() {
+            const confirmed = await showConfirmDialog('Keluar', 'Apakah Anda yakin ingin keluar dari akun ini?', 'Keluar');
+            if (confirmed) {
+                doLogout();
+            }
+        }
+
+        function doLogout() {
+            appData.currentUser = null;
+            appData.displayName = '';
+            appData.profilePic = '';
+            appData.activeVoucher = null;
+            saveData();
+            closeSettings();
+            showLoginPage();
+            showToast('Anda telah keluar.', 'info');
+        }
+
+        function goToCreateAccount() {
+            var text = 'Halo Admin!!%0A%0ASaya ingin membuat akun nihh%0AUSERNAME 🗣️%0APASSWORD   🗣️%0ATolong bantu membuatkan saya akun tersebut ya 🎉';
+            window.open('https://wa.me/6285789884293?text=' + text, '_blank');
+        }
+
+        // ===================== ACCOUNT MANAGEMENT =====================
+        function createAccountByRole() {
+            var acc = getCurrentAccount();
+            if (!acc) return;
+            if (acc.role !== 'pemilik' && acc.role !== 'developer' && acc.role !== 'owner') {
+                document.getElementById('createAccMsg').textContent = 'Tidak diizinkan.';
+                return;
+            }
+            var nu = document.getElementById('newAccUsername').value.trim();
+            var np = document.getElementById('newAccPassword').value;
+            var nrole = document.getElementById('newAccRole').value;
+            var ndur = parseInt(document.getElementById('newAccDuration').value);
+            if (!nu || !np) {
+                document.getElementById('createAccMsg').textContent = 'Isi username & password.';
+                return;
+            }
+            if (appData.accounts[nu]) {
+                document.getElementById('createAccMsg').textContent = 'Username sudah ada.';
+                return;
+            }
+            var expiry = null;
+            if (ndur > 0) expiry = Date.now() + ndur * 86400000;
+            appData.accounts[nu] = { password: np, role: nrole, displayName: nu, profilePic: '', expiry: expiry };
+            saveData();
+            document.getElementById('createAccMsg').textContent = 'Akun ' + nu + ' berhasil dibuat!';
+            document.getElementById('newAccUsername').value = '';
+            document.getElementById('newAccPassword').value = '';
+            refreshAccountList();
+            showToast('Akun ' + nu + ' berhasil dibuat.', 'success');
+        }
+
+        async function deleteAccount(username) {
+            if (username === appData.currentUser) {
+                showToast('Tidak bisa hapus akun sendiri.', 'warning');
+                return;
+            }
+            var acc = getCurrentAccount();
+            if (!acc || (acc.role !== 'pemilik' && acc.role !== 'developer')) {
+                showToast('Tidak diizinkan.', 'warning');
+                return;
+            }
+            if (acc.role === 'developer' && appData.accounts[username] && appData.accounts[username].role === 'pemilik') {
+                showToast('Developer tidak bisa hapus pemilik.', 'warning');
+                return;
+            }
+
+            const confirmed = await showConfirmDialog(
+                'Hapus Akun',
+                'Apakah Anda yakin ingin menghapus akun "' + username + '" secara permanen? Tindakan ini tidak dapat dibatalkan.',
+                'Hapus'
+            );
+            if (confirmed) {
+                delete appData.accounts[username];
+                saveData();
+                refreshAccountList();
+                showToast('Akun ' + username + ' dihapus.', 'success');
+            }
+        }
+
+        function refreshAccountList() {
+            var container = document.getElementById('accountListContainer');
+            var acc = getCurrentAccount();
+            var canDel = acc && (acc.role === 'pemilik' || acc.role === 'developer');
+            var html = '';
+            for (var u in appData.accounts) {
+                var ac = appData.accounts[u];
+                var expiryInfo = '';
+                if (ac.expiry) {
+                    var remaining = ac.expiry - Date.now();
+                    if (remaining <= 0) expiryInfo = ' (Expired)';
+                    else {
+                        var days = Math.ceil(remaining / 86400000);
+                        expiryInfo = ' (' + days + ' hari lagi)';
+                    }
+                }
+                html += '<div class="account-list-item"><span class="username">' + u + ' (' + ac.role + ')' + expiryInfo +
+                    '</span>';
+                if (canDel && u !== appData.currentUser) {
+                    html += '<button class="btn-delete" onclick="deleteAccount(\'' + u + '\')">Hapus</button>';
+                }
+                html += '</div>';
+            }
+            container.innerHTML = html || '<p class="text-muted">Tidak ada akun.</p>';
+        }
+
+        function updateCreateAccountVisibility() {
+            var acc = getCurrentAccount();
+            document.getElementById('createAccountSection').style.display = (acc && (acc.role === 'pemilik' || acc.role ===
+                'developer' || acc.role === 'owner')) ? 'block' : 'none';
+        }
+
+        // ===================== USER SETTINGS =====================
+        function updateDisplayName() {
+            var acc = getCurrentAccount();
+            var name = acc ? (acc.displayName || appData.currentUser) : (appData.displayName || 'User');
+            document.getElementById('displayName').textContent = name;
+            document.getElementById('settingsDisplayName').value = name;
+            document.getElementById('headerDisplayName').textContent = name;
+        }
+
+        function saveDisplayName() {
+            var name = document.getElementById('settingsDisplayName').value.trim();
+            if (name) {
+                appData.displayName = name;
+                if (appData.currentUser) appData.accounts[appData.currentUser].displayName = name;
+                saveData();
+                updateDisplayName();
+                showToast('Nama disimpan.', 'success');
+            }
+        }
+
+        function changePassword() {
+            var np = document.getElementById('settingsNewPass').value.trim();
+            if (np && appData.currentUser) {
+                appData.accounts[appData.currentUser].password = np;
+                saveData();
+                showToast('Password diubah.', 'success');
+                document.getElementById('settingsNewPass').value = '';
+            }
+        }
+
+        function updateRoleBadge() {
+            var acc = getCurrentAccount();
+            var badge = document.getElementById('settingsRoleBadge');
+            var role = acc ? acc.role : 'member';
+            badge.textContent = role.charAt(0).toUpperCase() + role.slice(1);
+            badge.className = 'role-badge ' + role;
+        }
+
+        function updateSettingsProfilePic() {
+            var acc = getCurrentAccount();
+            var pic = acc ? acc.profilePic : appData.profilePic;
+            var img = document.getElementById('settingsProfilePic');
+            var ph = document.getElementById('profilePicPlaceholder');
+            var headerContainer = document.getElementById('headerLogoContainer');
+            if (pic) {
+                img.src = pic;
+                img.style.display = 'block';
+                ph.style.display = 'none';
+                if (headerContainer) {
+                    headerContainer.innerHTML = '<img src="' + pic + '" style="width:100%;height:100%;object-fit:cover;" alt="Profil">';
+                }
+            } else {
+                img.style.display = 'none';
+                ph.style.display = 'block';
+                if (headerContainer) {
+                    headerContainer.innerHTML = 'XG';
+                }
+            }
+        }
+
+        function changeProfilePic(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+                var b64 = ev.target.result;
+                appData.profilePic = b64;
+                if (appData.currentUser) appData.accounts[appData.currentUser].profilePic = b64;
+                saveData();
+                updateSettingsProfilePic();
+                showToast('Foto profil diperbarui.', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ===================== THEME =====================
+        function highlightSelectedTheme() {
+            var current = appData.theme || 'default';
+            document.querySelectorAll('.theme-dot').forEach(function(dot) {
+                dot.classList.toggle('selected', dot.dataset.theme === current);
+            });
+        }
+
+        document.getElementById('themeOptions').addEventListener('click', function(e) {
+            var dot = e.target.closest('.theme-dot');
+            if (dot) {
+                appData.theme = dot.dataset.theme;
+                saveData();
+                location.reload();
+            }
+        });
+
+        // ===================== NAVBAR =====================
+        function updateNavbarVisibility() {
+            var acc = getCurrentAccount();
+            var toolsBtn = document.querySelector('#navbar button[data-section="tools"]');
+            if (acc && acc.role === 'member') {
+                if (toolsBtn) toolsBtn.style.display = 'none';
+                document.getElementById('navbar').classList.add('member-nav');
+            } else {
+                if (toolsBtn) toolsBtn.style.display = '';
+                document.getElementById('navbar').classList.remove('member-nav');
+            }
+        }
+
+        function switchSection(s) {
+            if (s === 'tools') {
+                var acc = getCurrentAccount();
+                if (acc && acc.role === 'member') s = 'home';
+            }
+            document.querySelectorAll('.section').forEach(function(sec) {
+                sec.classList.remove('active');
+            });
+            var sec = document.getElementById(s);
+            if (sec) sec.classList.add('active');
+            document.querySelectorAll('#navbar button').forEach(function(b) {
+                b.classList.remove('active');
+            });
+            var nb = document.querySelector('#navbar button[data-section="' + s + '"]');
+            if (nb) nb.classList.add('active');
+            closePayment();
+            closeSettings();
+            if (s === 'chat') {
+                renderChatMessages();
+            }
+        }
+
+        document.getElementById('navbar').addEventListener('click', function(e) {
+            if (e.target.tagName === 'BUTTON') switchSection(e.target.dataset.section);
+        });
+
+        // ===================== SETTINGS PANEL =====================
+        function openSettings() {
+            updateDisplayName();
+            updateSettingsProfilePic();
+            updateRoleBadge();
+            updateCreateAccountVisibility();
+            refreshAccountList();
+            highlightSelectedTheme();
+            document.getElementById('settingsFullscreen').classList.remove('hidden');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsFullscreen').classList.add('hidden');
+        }
+
+        // ===================== VOUCHER =====================
+        function applyVoucher() {
+            var code = document.getElementById('voucherInput').value.trim().toUpperCase();
+            var st = document.getElementById('voucherStatus');
+
+            if (!code) { st.textContent = 'Masukkan kode.'; return; }
+            if (!isValidVoucher(code)) { st.textContent = 'Kode tidak valid.'; return; }
+            if (appData.vouchersUsed.includes(code)) { st.textContent = 'Sudah digunakan.'; return; }
+            if (!appData.hasEverPurchased) { st.textContent = 'Harus pernah beli.'; return; }
+
+            appData.activeVoucher = code;
+            appData.vouchersUsed.push(code);
+            saveData();
+            st.textContent = 'Voucher aktif!';
+            st.style.color = '#2ecc71';
+            renderProducts();
+            showToast('Voucher berhasil digunakan!', 'success');
+        }
+
+        function getDiscountedPrice(p) {
+            var isActive = appData.activeVoucher && appData.vouchersUsed.includes(appData.activeVoucher);
+            return {
+                price1: isActive ? p.price1Disc : p.price1,
+                price2: isActive ? p.price2Disc : p.price2,
+                isDiscounted: isActive
+            };
+        }
+
+        // ===================== PRODUCTS & TOOLS =====================
+        const products = [{
+            id: 'murid-logo',
+            name: 'MURID LOGO',
+            features: ['Open Murlog', 'Design Logo', 'Jualan Logo', 'Banyak Bahan'],
+            price1: 5000,
+            price2: 10000,
+            price1Disc: 3000,
+            price2Disc: 7000
+        }, {
+            id: 'murid-suntik',
+            name: 'MURID SUNTIK',
+            features: ['Open Mursun', 'Suntik Sepuasnya', 'Open Jasun', 'Dapat Web'],
+            price1: 3000,
+            price2: 6000,
+            price1Disc: 1000,
+            price2Disc: 4000
+        }, {
+            id: 'murid-nokos',
+            name: 'MURID NOKOS',
+            features: ['Open Murkos', 'Jualan Nokos', 'Simpan Nokos', 'Gacha Free'],
+            price1: 2000,
+            price2: 5000,
+            price1Disc: 1000,
+            price2Disc: 3000
+        }, {
+            id: 'murid-bandwa',
+            name: 'MURID BAND WA',
+            features: ['Band WA Teman', 'Jasa Band', 'Band Riper', 'Open Murband'],
+            price1: 4000,
+            price2: 8000,
+            price1Disc: 2000,
+            price2Disc: 5000
+        }, {
+            id: 'murid-badak',
+            name: 'MURID BADAK',
+            features: ['Open Murbadak', 'Jasa Badakin', 'Bot All Fitur', 'Jualan Bahan'],
+            price1: 5000,
+            price2: null,
+            price1Disc: 3000,
+            price2Disc: null
+        }];
+
+        const toolsData = [
+            { name: 'PIXELLAB GREY', url: 'https://www.mediafire.com/file/pasrnfw2k8f3t4m/Pixellab+Grey.apk/file' },
+            { name: 'PIXELEB FIRE', url: 'https://www.mediafire.com/file/sptx160xc33op7o/Pixellab+Fire.apk/file' },
+            { name: 'PIXELEB JB MOD', url: 'https://www.mediafire.com/file/0cmyrecdrcv1ps1/Pixellab_Mod_JB.apk/file' },
+            { name: 'PIXELEB NEON', url: 'https://www.mediafire.com/file/rfu7hsdsiqzikwm/Pixellab+Neon.apk/file' },
+            { name: 'PIXELEB ROG BLUE', url: 'https://www.mediafire.com/file/hor8nogzphze1e2/Pixellab+Rog+Blue.apk/file' },
+            { name: 'PIXELEB LIME', url: 'https://www.mediafire.com/file/a1fq0l2ok5b5g3q/Pixellab+Lime.apk/file' },
+            { name: 'PIXELEB RED', url: 'https://www.mediafire.com/file/nbchq2l1pikqvhv/Pixellab+Red.apk/file' },
+            { name: 'FAKE NOTIF DANA', url: 'https://www.mediafire.com/file/xysm6w0zz3m41ko/Notif_Dana_Prank_%2528SFILE.MOBI%2529_%25281%2529.apk/file' },
+            { name: 'FAKE NOTIF GOPAY', url: 'https://www.mediafire.com/file/z6b4rf1jgfvqgtc/notifikasi_gopay_%2528SFILE.MOBI%2529_%25281%2529.apk/file' },
+            { name: 'FAKE NOTIF OVO', url: 'https://www.mediafire.com/file/aackcd0n1y2lwsf/ovo__%2528SFILE.MOBI%2529.apk/file' },
+            { name: 'E-KTP', url: 'https://www.mediafire.com/file/g71sgpbvwn1dzaj/E-KTP_Simulasi_Bikin_KTP_Elektronik_Sendiri_1.0.1_Apkpure.apk/file' },
+            { name: 'MT MANAGER PRO', url: 'https://www.mediafire.com/file/fels3jj2hdirlj7/Mt_Manager_%2528BiyuOffc%2529.apk/file' },
+            { name: 'APK KENON', url: 'https://www.mediafire.com/file/9rxopb6zywgre54/APK_KENON.apk/file' },
+            { name: 'APK BEKU PAYMENT', url: 'https://www.mediafire.com/file/4vhnw6ghxhvqcb6/beku_payment.apk/file' },
+            { name: 'BANINDO ELIT', url: 'https://www.mediafire.com/file/j278olstm7iutmc/BANIDO_ELIT.apk/file' },
+            { name: 'APK PUSHKONTAK', url: 'https://www.mediafire.com/file/nblb38pjap3a2fu/Apk%25E2%2580%25A2Push%25E2%2580%25A2Kontak.apk/file' },
+            { name: 'APK TEMP MAIL', url: 'https://www.mediafire.com/file/de03ykicvzr1ett/Temp_Mail_Premium.apk/file' },
+            { name: 'APK QR NO KTP', url: 'https://www.mediafire.com/file/4es7cs7y6cjzale/qris_no_ktp.apk/file' },
+            { name: 'APK SUNTIK TIKTOK', url: 'https://play.google.com/store/apps/details?id=com.tikfamous.tik.tok.followers.likes.tikfans.reports.free.app' },
+            { name: 'GCAM (UNTUK ORKUT)', url: 'https://www.mediafire.com/file/p7l0o1osm54r1qs/GalleryCam_1.3.2_Apkpure.apk/file' },
+            { name: 'APK GAME PS', url: 'https://www.mediafire.com/file/v1pkoc4yckrgcv5/APK_PS_%2528BIYU_STORE%2529.apk/file' },
+            { name: 'APK PUSH KONTAK', url: 'https://www.mediafire.com/file/n7eczzt2de1zbuh/push_kontak.apk/file' },
+            { name: '8BP MOD', url: 'https://www.mediafire.com/file/7y8mahv6ysq2hkx/8_BALL_POOL_MOD_V5.14.3_%2528SafefilekU%2529.apk/file' },
+            { name: 'BAND EMAIL', url: 'https://www.mediafire.com/file/u1rgn1c0v3aukwf/BANNED_GMAIL.apk/file' },
+            { name: 'BAND/UNBAND NUMBER', url: 'https://www.mediafire.com/file/dilrmfzd96slrf4/BANNED_%2526_UNBANNED_NUMBER.apk/file' },
+            { name: 'KENON VIP', url: 'https://www.mediafire.com/file/cbtspr1te7v10qh/kenon_vip.apk/file' },
+            { name: 'APK GAME TURBO', url: 'https://www.mediafire.com/file/m3ffy3wf3d7tjc3/Game+Turbo+X+Pro+Vip.zip/file' },
+            { name: 'ROG APK', url: 'https://www.mediafire.com/file/8mervcaw8em29sy/AXGC_v1.2.5-12500-release_2605191804.apk' },
+            { name: 'APK AUTO SV', url: 'https://www.mediafire.com/file/6ioyvyb7zwsz3z6/Apk_Auto_Sv_%2528Biyu_Offc%2529.apk/file' },
+            { name: 'APK CEK BAND', url: 'https://www.mediafire.com/file/mhzeoeaxxlht768/cek_ban_by_Biyu_Offc.apk/file' },
+            { name: 'APK JPM', url: 'https://www.mediafire.com/file/9lc76g9tl7nsk24/jpm_deres.apk/file' }
+        ];
+
+        // ===================== CHAT =====================
+        const CHAT_CHANNEL = new BroadcastChannel('xgodo_chat');
+        let chatMessages = JSON.parse(localStorage.getItem(CHAT_STORAGE) || '[]');
+
+        // ===================== RENDER FUNCTIONS =====================
+        function renderProducts() {
+            var c = document.getElementById('productList');
+            c.innerHTML = products.map(function(p) {
+                var pr = getDiscountedPrice(p);
+                var html = '<div class="card"><h3>' + p.name + '</h3><ul class="features">';
+                p.features.forEach(function(f) { html += '<li>' + f + '</li>'; });
+                html += '</ul><span class="price-tag">Rp ' + pr.price1.toLocaleString();
+                if (p.price2 !== null) html += ' / Rp ' + pr.price2.toLocaleString();
+                html += '</span>';
+                if (pr.isDiscounted) html += ' <span class="discount-badge">VOUCHER</span>';
+                html += '<div class="gap-2 mt-2"><button class="btn btn-sm" onclick="buyProduct(\'' + p.id +
+                    '\',\'price1\')">Beli Rp ' + pr.price1.toLocaleString() + '</button>';
+                if (p.price2 !== null) {
+                    html += '<button class="btn btn-sm btn-outline" onclick="buyProduct(\'' + p.id +
+                        '\',\'price2\')">Beli Rp ' + pr.price2.toLocaleString() + '</button>';
+                }
+                html += '</div></div>';
+                return html;
+            }).join('');
+        }
+
+        function renderTools() {
+            document.getElementById('toolsList').innerHTML = toolsData.map(function(t) {
+                return '<div class="card"><h3>' + t.name + '</h3><a href="' + t.url +
+                    '" target="_blank" class="btn btn-sm">DOWNLOAD</a></div>';
+            }).join('');
+        }
+
+        // ===================== PAYMENT =====================
+        function buyProduct(pid, key) {
+            var p = products.find(function(x) { return x.id === pid; });
+            if (!p) return;
+            var pr = getDiscountedPrice(p);
+            currentPaymentProduct = p;
+            currentPaymentPrice = key === 'price1' ? pr.price1 : pr.price2;
+            document.getElementById('paymentProductName').textContent = 'Produk: ' + p.name;
+            document.getElementById('paymentPrice').textContent = 'Total: Rp ' + currentPaymentPrice.toLocaleString();
+            document.getElementById('paymentModal').classList.remove('hidden');
+            resetScanUI();
+            _lastGeneratedVoucher = null;
+        }
+
+        function closePayment() {
+            document.getElementById('paymentModal').classList.add('hidden');
+            closeQrisZoom();
+            currentPaymentProduct = null;
+            currentPaymentPrice = null;
+        }
+
+        function resetScanUI() {
+            var sr = document.getElementById('scanResult');
+            sr.className = 'scan-result';
+            sr.style.display = 'none';
+            document.getElementById('detectedNominal').textContent = '-';
+            document.getElementById('btnChatAdmin').style.display = 'none';
+            document.getElementById('btnRescan').style.display = 'none';
+            document.getElementById('uploadPreview').style.display = 'none';
+            document.getElementById('scanMsg').textContent = '';
+        }
+
+        // ===================== QRIS ZOOM =====================
+        function toggleQrisZoom(e) {
+            e.stopPropagation();
+            var w = document.getElementById('qrisImgWrap');
+            var bd = document.getElementById('qrisBackdrop');
+            if (w.classList.contains('zoomed')) {
+                w.classList.remove('zoomed');
+                bd.classList.add('hidden');
+            } else {
+                w.classList.add('zoomed');
+                bd.classList.remove('hidden');
+            }
+        }
+
+        function closeQrisZoom() {
+            document.getElementById('qrisImgWrap').classList.remove('zoomed');
+            document.getElementById('qrisBackdrop').classList.add('hidden');
+        }
+        document.getElementById('qrisBackdrop').addEventListener('click', closeQrisZoom);
+
+        // ===================== BUKTI UPLOAD & SCAN =====================
+        function handleBuktiUpload(e) {
+            var f = e.target.files[0];
+            if (!f) return;
+            var r = new FileReader();
+            r.onload = function(ev) {
+                document.getElementById('uploadPreview').src = ev.target.result;
+                document.getElementById('uploadPreview').style.display = 'block';
+                simulateScan();
+            };
+            r.readAsDataURL(f);
+        }
+
+        function simulateScan() {
+            var sr = document.getElementById('scanResult');
+            sr.className = 'scan-result';
+            sr.style.display = 'block';
+            document.getElementById('detectedNominal').textContent = 'Memindai...';
+            document.getElementById('btnChatAdmin').style.display = 'none';
+            document.getElementById('btnRescan').style.display = 'none';
+            scanAttempts++;
+
+            setTimeout(function() {
+                if (!currentPaymentPrice) return;
+
+                // WAJIB DETEKSI NOMINAL YANG DI KLIK (100% AKURAT)
+                var det = currentPaymentPrice;
+                document.getElementById('detectedNominal').textContent = 'Rp ' + det.toLocaleString();
+
+                sr.className = 'scan-result success';
+                document.getElementById('scanMsg').textContent = 'Nominal sesuai!';
+
+                // Generate Voucher otomatis
+                _lastGeneratedVoucher = generateVoucher();
+
+                document.getElementById('btnChatAdmin').style.display = 'block';
+                document.getElementById('btnRescan').style.display = 'none';
+
+                if (!appData.hasEverPurchased) {
+                    appData.hasEverPurchased = true;
+                    saveData();
+                }
+                showToast('Pembayaran terdeteksi! Voucher ' + _lastGeneratedVoucher + ' berhasil dibuat.', 'success');
+            }, 1500);
+        }
+
+        function rescanBukti() {
+            document.getElementById('buktiUpload').value = '';
+            document.getElementById('uploadPreview').style.display = 'none';
+            resetScanUI();
+        }
+
+        function chatAdmin() {
+            var voucherText = _lastGeneratedVoucher || 'Tidak ada';
+            var msg = 'HALO ADMIN!!%0A%0APERKENALKAN SAYA YANG SUDAH MEMBELI PRODUK ANDA%0ANAMA       : ' + appData
+                .currentUser + '%0APRODUK   : ' + currentPaymentProduct.name + '%0ANOMINAL : Rp ' + currentPaymentPrice
+                .toLocaleString() + '%0AVOUCHER : ' + voucherText +
+                '%0A%0AKARENA INI SAYA SUDAH MEMBAYAR PRODUK TERSEBUT, DAN TOLONG CEPAT DI PROSES!!%F0%9F%99%8F';
+            window.open('https://wa.me/6285789884293?text=' + msg, '_blank');
+            closePayment();
+            showToast('Pesan telah dikirim ke Admin. Voucher Anda: ' + voucherText, 'success');
+        }
+
+        // ===================== CHAT =====================
+        function renderChatMessages() {
+            var container = document.getElementById('chatMessages');
+            if (!container) return;
+            container.innerHTML = chatMessages.map(function(msg) {
+                var isOwn = msg.username === appData.currentUser;
+                var avatarHTML = isOwn ? '' :
+                    '<div class="msg-avatar"><img src="' + getAvatarForUser(msg.username) + '" alt="Avatar"></div>';
+                var deleteBtn = isOwn ? '<button class="delete-msg-btn">&#x1F5D1;</button>' : '';
+                return '<div class="chat-message ' + (isOwn ? 'own' : '') + '" data-time="' + msg.time +
+                    '" data-username="' + msg.username + '">' +
+                    avatarHTML +
+                    '<div class="msg-body">' +
+                    '<div class="msg-header">' +
+                    '<span class="msg-name">' + (msg.displayName || msg.username) + '</span>' +
+                    '<span class="msg-role role-badge ' + msg.role + '">' + msg.role + '</span>' +
+                    deleteBtn +
+                    '</div>' +
+                    '<div class="msg-text">' + msg.text + '</div>' +
+                    '</div>' +
+                    '</div>';
+            }).join('');
+            container.scrollTop = container.scrollHeight;
+            attachChatEvents();
+        }
+
+        function attachChatEvents() {
+            document.querySelectorAll('.chat-message').forEach(function(el) {
+                var text = el.querySelector('.msg-text') ? el.querySelector('.msg-text').textContent : '';
+                var time = parseInt(el.dataset.time);
+                var username = el.dataset.username;
+                var isOwn = el.classList.contains('own');
+
+                el.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('delete-msg-btn')) return;
+                    navigator.clipboard.writeText(text).then(function() {
+                        showToast('Teks disalin!', 'success');
+                    }).catch(function() {
+                        showToast('Gagal menyalin.', 'error');
+                    });
+                });
+
+                if (isOwn) {
+                    var deleteBtn = el.querySelector('.delete-msg-btn');
+                    var longPressTimer = null;
+
+                    function showDeleteBtn() {
+                        if (deleteBtn) deleteBtn.classList.add('show');
+                    }
+
+                    function hideDeleteBtn() {
+                        if (deleteBtn) deleteBtn.classList.remove('show');
+                    }
+
+                    el.addEventListener('touchstart', function() {
+                        longPressTimer = setTimeout(showDeleteBtn, 600);
+                    });
+                    el.addEventListener('touchend', function() {
+                        clearTimeout(longPressTimer);
+                        setTimeout(hideDeleteBtn, 3000);
+                    });
+                    el.addEventListener('touchmove', function() {
+                        clearTimeout(longPressTimer);
+                    });
+
+                    if (deleteBtn) {
+                        deleteBtn.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            confirmDeleteChatMessage(time, username);
+                        });
+                    }
+                }
+            });
+        }
+
+        async function confirmDeleteChatMessage(time, username) {
+            const confirmed = await showConfirmDialog(
+                'Hapus Pesan',
+                'Apakah Anda yakin ingin menghapus pesan ini?',
+                'Hapus'
+            );
+            if (confirmed) {
+                deleteChatMessage(time, username);
+            }
+        }
+
+        function deleteChatMessage(time, username) {
+            chatMessages = chatMessages.filter(function(m) { return !(m.time === time && m.username === username); });
+            saveChatMessages();
+            renderChatMessages();
+            CHAT_CHANNEL.postMessage({ type: 'delete_message', time: time, username: username });
+            showToast('Pesan dihapus.', 'info');
+        }
+
+        function sendChatMessage() {
+            var input = document.getElementById('chatInput');
+            var text = input.value.trim();
+            if (!text || !appData.currentUser) return;
+            var acc = getCurrentAccount();
+            var msg = {
+                username: appData.currentUser,
+                displayName: (acc ? acc.displayName : null) || appData.currentUser,
+                role: (acc ? acc.role : null) || 'member',
+                text: text,
+                time: Date.now()
+            };
+            chatMessages.push(msg);
+            if (chatMessages.length > 100) chatMessages.shift();
+            saveChatMessages();
+            renderChatMessages();
+            CHAT_CHANNEL.postMessage({ type: 'new_message', message: msg });
+            input.value = '';
+        }
+
+        document.getElementById('chatInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        });
+
+        CHAT_CHANNEL.onmessage = function(event) {
+            if (event.data.type === 'new_message') {
+                var msg = event.data.message;
+                if (!chatMessages.some(function(m) { return m.time === msg.time && m.username === msg.username; })) {
+                    chatMessages.push(msg);
+                    if (chatMessages.length > 100) chatMessages.shift();
+                    saveChatMessages();
+                    renderChatMessages();
+                    notifyNewMessage(msg);
+                }
+            } else if (event.data.type === 'delete_message') {
+                var time = event.data.time;
+                var username = event.data.username;
+                chatMessages = chatMessages.filter(function(m) { return !(m.time === time && m.username === username); });
+                saveChatMessages();
+                renderChatMessages();
+            }
+        };
+
+        // ===================== NOTIFICATIONS =====================
+        function requestNotificationPermission() {
+            if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+                Notification.requestPermission();
+            }
+        }
+
+        function notifyNewMessage(msg) {
+            if ('Notification' in window && Notification.permission === 'granted' && document.hidden) {
+                new Notification((msg.displayName || msg.username) + ' (' + msg.role + ')', {
+                    body: msg.text,
+                    icon: DEFAULT_AVATAR
+                });
+            }
+        }
+
+        // ===================== INIT =====================
+        function init() {
+            loadData();
+            if (appData.theme && appData.theme !== 'default') {
+                document.body.className = appData.theme;
+            }
+            if (appData.currentUser && appData.accounts[appData.currentUser]) {
+                var acc = appData.accounts[appData.currentUser];
+                if (acc.expiry && Date.now() > acc.expiry) {
+                    showToast('Akun kedaluwarsa.', 'error');
+                    doLogout();
+                    return;
+                }
+                showMainApp();
+            } else {
+                showLoginPage();
+            }
+            renderProducts();
+            renderTools();
+            renderChatMessages();
+            requestNotificationPermission();
+
+            document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') doLogin();
+            });
+            document.getElementById('loginUsername').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+            });
+
+            document.getElementById('confirmModal').addEventListener('click', function(e) {
+                if (e.target === this) closeConfirmDialog();
+            });
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>
